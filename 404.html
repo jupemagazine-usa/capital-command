@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <script>
+   (function () {
+  var proto = XMLHttpRequest.prototype;
+  var open = proto.open, setRequestHeader = proto.setRequestHeader, send = proto.send;
+  var TOKEN_KEY = 'base44_access_token';
+  var storedTokenHeader = function () {
+    try { return 'Bearer ' + localStorage.getItem(TOKEN_KEY); } catch (e) { return null; }
+  };
+  var forgetStoredToken = function () {
+    try { localStorage.removeItem(TOKEN_KEY); localStorage.removeItem('token'); } catch (e) {}
+  };
+
+  proto.open = function (method, url) {
+    this.__b44IsAuthCheck = /\/entities\/User\/me(\?|$)/.test(url);
+    return open.apply(this, arguments);
+  };
+
+  proto.setRequestHeader = function (name, value) {
+    if (this.__b44IsAuthCheck && name.toLowerCase() === 'authorization' && value === storedTokenHeader()) {
+      this.__b44SentToken = value;
+    }
+    return setRequestHeader.call(this, name, value);
+  };
+
+  proto.send = function () {
+    this.addEventListener('loadend', function () {
+      var rejectedTokenStillStored = this.status === 401 && this.__b44SentToken === storedTokenHeader();
+      if (rejectedTokenStillStored) forgetStoredToken();
+    });
+    return send.apply(this, arguments);
+  };
+})();
+  </script>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+  <link href="/manifest.json" rel="manifest"/>
+  <!-- Favicon -->
+  <link href="https://media.base44.com/images/public/6a286180819d95fc63a13b72/0274263e1_image.png" rel="icon" type="image/png"/>
+  <link href="https://media.base44.com/images/public/6a286180819d95fc63a13b72/0274263e1_image.png" rel="apple-touch-icon"/>
+  <!-- Primary Meta -->
+  <title>
+   Capital Command
+  </title>
+  <meta content="An ultra-secure, strategic grant management dashboard designed for cultural organizations to track, route, and optimize capital acquisition narratives in real-time." name="description"/>
+  <meta content="New Orleans cultural grants, NOJHF grant, after-school music education, Cultural Sustainability Engine, The Soundmark Initiative, The Box Studios, JUPE Magazine, New Orleans jazz heritage, artist grants Louisiana, audio engineering education, community investment New Orleans" name="keywords"/>
+  <meta content="Cultural Sustainability Engine™ — New Orleans, LA" name="author"/>
+  <meta content="index, follow" name="robots"/>
+  <meta content="#E5C158" name="theme-color"/>
+  <!-- Canonical -->
+  <!-- Open Graph / Facebook -->
+  <meta content="website" property="og:type"/>
+  <meta content="https://capital.metanated.com" property="og:url"/>
+  <meta content="Capital Command" property="og:title"/>
+  <meta content="An ultra-secure, strategic grant management dashboard designed for cultural organizations to track, route, and optimize capital acquisition narratives in real-time." property="og:description"/>
+  <meta content="https://media.base44.com/images/public/6a286180819d95fc63a13b72/e34fddae9_logo.png/v1/fill/w_1200,h_630/e34fddae9_logo.png" property="og:image"/>
+  <meta content="1200" property="og:image:width"/>
+  <meta content="630" property="og:image:height"/>
+  <meta content="Capital Command" property="og:site_name"/>
+  <meta content="en_US" property="og:locale"/>
+  <!-- Twitter Card -->
+  <meta content="summary_large_image" name="twitter:card"/>
+  <meta content="https://capital.metanated.com" name="twitter:url"/>
+  <meta content="Capital Command" name="twitter:title"/>
+  <meta content="An ultra-secure, strategic grant management dashboard designed for cultural organizations to track, route, and optimize capital acquisition narratives in real-time." name="twitter:description"/>
+  <meta content="https://media.base44.com/images/public/6a286180819d95fc63a13b72/e34fddae9_logo.png/v1/fill/w_1200,h_630/e34fddae9_logo.png" name="twitter:image"/>
+  <!-- Geo / Local SEO -->
+  <meta content="US-LA" name="geo.region"/>
+  <meta content="New Orleans, Louisiana" name="geo.placename"/>
+  <meta content="29.9511;-90.0715" name="geo.position"/>
+  <meta content="29.9511, -90.0715" name="ICBM"/>
+  <!-- Structured Data — Organization -->
+  <script type="application/ld+json">
+   {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Cultural Sustainability Engine™",
+      "alternateName": "CSE",
+      "url": "https://culturalsustainabilityengine.com",
+      "logo": "https://media.base44.com/images/public/6a286180819d95fc63a13b72/0274263e1_image.png",
+      "description": "A New Orleans-based cultural infrastructure initiative bridging technology, sonic heritage, and philanthropic investment to empower the next generation of culture bearers.",
+      "foundingDate": "2026",
+      "foundingLocation": {
+        "@type": "Place",
+        "name": "New Orleans, Louisiana",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "New Orleans",
+          "addressRegion": "LA",
+          "addressCountry": "US"
+        }
+      },
+      "areaServed": {
+        "@type": "City",
+        "name": "New Orleans"
+      },
+      "knowsAbout": [
+        "Audio Engineering Education",
+        "Intellectual Property Stewardship",
+        "Cultural Preservation",
+        "Community Grants",
+        "Music Production",
+        "New Orleans Jazz Heritage"
+      ],
+      "sameAs": [
+        "https://www.jupemagazine.com",
+        "https://www.theboxstudiosofneworleans.com",
+        "https://byronjupiter.base44.app",
+        "https://drstephaniejupiter.base44.app"
+      ]
+    }
+  </script>
+  <!-- Structured Data — Educational Program -->
+  <script type="application/ld+json">
+   {
+      "@context": "https://schema.org",
+      "@type": "EducationalOrganization",
+      "name": "The Soundmark Initiative",
+      "description": "A 12-week after-school initiative cultivating spatial audio literacy, intellectual property stewardship, and creative self-determination rooted in New Orleans' indigenous sonic heritage.",
+      "url": "https://culturalsustainabilityengine.com",
+      "location": {
+        "@type": "Place",
+        "name": "The Box Studios",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "New Orleans",
+          "addressRegion": "LA",
+          "addressCountry": "US"
+        }
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "description": "Free after-school program — fully subsidized by JUPE Magazine & The Box Studios"
+      }
+    }
+  </script>
+  <!-- Structured Data — People of the Cultural Sustainability Engine™ -->
+  <script type="application/ld+json">
+   {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Person",
+          "name": "Byron Jupiter",
+          "jobTitle": "Lead Architect & Audio Engineer",
+          "description": "New Orleans legend — the first hip-hop DJ to perform at Jazz Fest. Master B2B SEO and spatial web architect leading studio engineering, spatial audio, and IP stewardship instruction.",
+          "worksFor": { "@type": "Organization", "name": "Cultural Sustainability Engine™" },
+          "homeLocation": { "@type": "Place", "name": "New Orleans, Louisiana" },
+          "knowsAbout": ["Audio Engineering", "Spatial Audio", "Intellectual Property", "Hip-Hop Heritage"]
+        },
+        {
+          "@type": "Person",
+          "name": "Dominic Minix",
+          "jobTitle": "Acoustic Instructor & Equity Director",
+          "description": "Master of analog deployment and community equity engineering. Creator of a 100% artist equity model and leader of acoustic instrumentation and live ensemble instruction.",
+          "worksFor": { "@type": "Organization", "name": "Cultural Sustainability Engine™" },
+          "homeLocation": { "@type": "Place", "name": "New Orleans, Louisiana" },
+          "knowsAbout": ["Acoustic Theory", "Live Ensemble", "Artist Equity", "Analog Instrumentation"]
+        },
+        {
+          "@type": "Person",
+          "name": "The Real Bobbi Rae",
+          "jobTitle": "Wellness Director & Roots Curriculum Lead",
+          "description": "Grounds the curriculum in mental health, somatic wellness, and identity sovereignty for the next generation of New Orleans culture bearers.",
+          "worksFor": { "@type": "Organization", "name": "Cultural Sustainability Engine™" },
+          "homeLocation": { "@type": "Place", "name": "New Orleans, Louisiana" },
+          "knowsAbout": ["Somatic Wellness", "Creator Resilience", "Community Healing"]
+        },
+        {
+          "@type": "Person",
+          "name": "Chris Severin Sr.",
+          "jobTitle": "Master Bassist, Educator & Studio Lead Engineer",
+          "description": "Treme-born master musician with 30+ years on global stages. NOCCA graduate trained under Ellis Marsalis. Lead Engineer at The Box Studios with credits including Dr. John, Allen Toussaint, Bonnie Raitt, and Wynton Marsalis.",
+          "worksFor": { "@type": "Organization", "name": "The Box Studios" },
+          "alumniOf": { "@type": "EducationalOrganization", "name": "NOCCA" },
+          "homeLocation": { "@type": "Place", "name": "New Orleans, Louisiana" },
+          "knowsAbout": ["Bass Performance", "Audio Engineering", "Jazz Education"]
+        },
+        {
+          "@type": "Person",
+          "name": "Kerry Lewis",
+          "jobTitle": "Master Bassist & Sousaphonist",
+          "description": "New Orleans-born master musician spanning five continents. Upright bass and sousaphone cornerstone of Preservation Hall, Palm Court Jazz Cafe, and the Leroy Jones Quintet. Co-founder of 11th Commandment Records.",
+          "memberOf": { "@type": "Organization", "name": "Preservation Hall Jazz Band" },
+          "homeLocation": { "@type": "Place", "name": "New Orleans, Louisiana" },
+          "knowsAbout": ["Upright Bass", "Sousaphone", "Traditional Jazz", "Music Production"]
+        },
+        {
+          "@type": "Person",
+          "name": "Kerry Lewis Jr.",
+          "jobTitle": "Bassist & Jazz Performer",
+          "description": "New Orleans-born, NYC-based bassist carrying the Preservation Hall lineage forward. Sousafund recipient and Xavier University of Louisiana alumni, performing on the New York jazz circuit.",
+          "alumniOf": { "@type": "EducationalOrganization", "name": "Xavier University of Louisiana" },
+          "homeLocation": { "@type": "Place", "name": "New York City, New York" },
+          "sameAs": ["https://www.instagram.com/kerryglewisjr/"],
+          "knowsAbout": ["Upright Bass", "Jazz Performance", "New Orleans Bass Tradition"]
+        },
+        {
+          "@type": "Person",
+          "name": "Kayla Lewis",
+          "jobTitle": "Soprano Vocalist, Opera & Musical Theater Artist",
+          "description": "New Orleans-born classically trained soprano. BFA from Xavier University of Louisiana, MM from NYU Steinhardt. Lead performer and co-creator of Belle Noire, with credits in The Gilded Age and The Marvelous Mrs. Maisel.",
+          "alumniOf": [
+            { "@type": "EducationalOrganization", "name": "Xavier University of Louisiana" },
+            { "@type": "EducationalOrganization", "name": "NYU Steinhardt" }
+          ],
+          "homeLocation": { "@type": "Place", "name": "New Orleans, Louisiana" },
+          "knowsAbout": ["Opera", "Classical Voice", "Musical Theater", "Jazz Vocals"]
+        },
+        {
+          "@type": "Person",
+          "name": "Aaniyah Anderson",
+          "jobTitle": "Vocalist, Performer & Resident Artist",
+          "description": "Indianapolis-born, New Orleans-forged vocalist. Interlochen-trained, Loyola University Music Industry Studies graduate. Studio collaborator with 3× Grammy-winning producer Deezle Harrison. Debut single Need You out now.",
+          "alumniOf": { "@type": "EducationalOrganization", "name": "Loyola University New Orleans" },
+          "homeLocation": { "@type": "Place", "name": "New Orleans, Louisiana" },
+          "knowsAbout": ["Vocal Performance", "Music Industry", "Recording Arts"]
+        },
+        {
+          "@type": "Person",
+          "name": "Miles Sam",
+          "jobTitle": "Guitarist, Composer & Rising Vanguard",
+          "description": "New Orleans-born electric guitarist and composer. Duke Ellington School of the Arts honors graduate, Berklee Valencia and Aspire alumnus. Performed at the 2024 New Orleans Jazz & Heritage Festival with Water Seed.",
+          "alumniOf": { "@type": "EducationalOrganization", "name": "Duke Ellington School of the Arts" },
+          "homeLocation": { "@type": "Place", "name": "Washington, DC" },
+          "knowsAbout": ["Electric Guitar", "Jazz Composition", "R&B", "Funk"]
+        },
+        {
+          "@type": "Person",
+          "name": "Thomas Grant",
+          "jobTitle": "Trombonist, Music Educator & Publishing Partner",
+          "description": "New Orleans trombonist and music educator with 13+ years inspiring youth. Big Red NOLA Publishing partner bringing the brass second-line tradition into youth development.",
+          "worksFor": { "@type": "Organization", "name": "Big Red NOLA Publishing" },
+          "homeLocation": { "@type": "Place", "name": "New Orleans, Louisiana" },
+          "knowsAbout": ["Trombone", "Brass Tradition", "Youth Music Education", "Second-Line Heritage"]
+        }
+      ]
+    }
+  </script>
+  <!-- Preconnect for performance -->
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://media.base44.com" rel="preconnect"/>
+  <script crossorigin="" src="/assets/index-km9TPKLH.js" type="module">
+  </script>
+  <link crossorigin="" href="/assets/index-MvkYsNiO.css" rel="stylesheet"/>
+  <script type="module">
+   if (window.self === window.top) {
+  let lastPath = "";
+  function getPageNameFromPath(path) {
+    const segments = path.split("/").filter(Boolean);
+    return segments[0] || null;
+  }
+  function trackPageView() {
+    const path = window.location.pathname;
+    if (path === lastPath) return;
+    lastPath = path;
+    const pageName = getPageNameFromPath(path) || "home";
+    const appId = "6a286180819d95fc63a13b72";
+    if (!appId) return;
+    fetch(`/api/app-logs/${appId}/log-user-in-app/${pageName}`, {
+      method: "POST",
+    }).catch(() => {});
+  }
+  const originalPushState = history.pushState.bind(history);
+  history.pushState = function (...args) {
+    originalPushState(...args);
+    trackPageView();
+  };
+  const originalReplaceState = history.replaceState.bind(history);
+  history.replaceState = function (...args) {
+    originalReplaceState(...args);
+    trackPageView();
+  };
+  window.addEventListener("popstate", trackPageView);
+  trackPageView();
+}
+  </script>
+  <script>
+   (function () {
+  var titles = {"/": "Capital Command", "/byron-jupiter": "Byron Jupiter Profile | Capital Command", "/abundance": "Abundance Portal | Capital Command", "/grants": "Grant Tracker | Capital Command", "/growth-model": "Growth Model | Capital Command", "/monuments": "Monuments | Capital Command", "/mama": "MAMA Consultant | Capital Command", "/architecture": "Web Architecture | Capital Command", "/box-studios": "Box Studios | Capital Command", "/logos": "Ecosystem Logos | Capital Command", "/jupiter-music-house": "Jupiter Music House | Capital Command", "/sanctuary-arts": "Sanctuary Arts | Capital Command", "/impact": "Philanthropic Impact | Capital Command", "/creator-profile": "Creator Profile | Capital Command", "/workbook": "AI Workbook | Capital Command", "/legislation": "Legislative Tracker | Capital Command", "/compliance": "Compliance Ledger | Capital Command", "/documentary": "Documentary | Capital Command", "/blackbook": "Blackbook | Capital Command", "/voices": "Voices Of Tomorrow | Capital Command", "/half-of-the-worst": "Half Of The Worst | Capital Command", "/omni-fm": "Omni FM | Capital Command", "/minerva": "Minerva Trust | Capital Command", "/jupe-grant": "Jupe Grant | Capital Command", "/ten-year-plan": "Ten Year Plan | Capital Command", "/sponsors": "Corporate Sponsors | Capital Command", "/fee-schedule": "Fee Schedule | Capital Command", "/box-terminal": "Box Terminal | Capital Command", "/jupe-magazine": "Jupe Magazine | Capital Command", "/encyclopedia": "Encyclopedia Jupiter | Capital Command", "/wilbert-vantage": "Wilbert Vantage | Capital Command", "/sovereign-frequency": "Sovereign Frequency | Capital Command", "/white-label": "White Label | Capital Command", "/ful-circle": "Ful Circle | Capital Command", "/ful-circle-roadmap": "Ful Circle Roadmap | Capital Command", "/financial-health": "Financial Health | Capital Command", "/delta-core": "Delta Core | Capital Command", "/grant-review": "Grant Review | Capital Command", "/ai-command": "AI Automation | Capital Command", "/press/breath-444": "Press Breath444 | Capital Command", "/editorial/1996": "Editorial1996 | Capital Command", "/recipient-files": "Recipient Files | Capital Command", "/official-record": "Official Record | Capital Command", "/books/bg-1996": "BG Book1996 | Capital Command", "/books/creator-collapse-2030": "Creator Collapse2030 | Capital Command", "/prosperity": "Prosperity Atlas | Capital Command", "/standards": "Standards Manual | Capital Command", "/social-strategy": "Social Strategy | Capital Command", "/books/the-rewrite": "Music Law Reform | Capital Command", "/regional-growth": "Regional Growth | Capital Command", "/jupiter-risk": "Jupiter Risk Ops | Capital Command", "/byron-peggys-son": "Byron Peggys Son | Capital Command", "/98-decides": "The98 Decides | Capital Command", "/wsdg": "WSDG Engagement | Capital Command", "/manuscript": "Manuscript | Capital Command", "/solid-color-ops": "Solid Color Ops | Capital Command", "/optimus-maximus": "Optimus Maximus | Capital Command", "/covert-map": "Covert Map | Capital Command", "/meticulous": "Meticulous Home | Capital Command", "/meticulous/studio": "Meticulous Studio | Capital Command", "/meticulous/software": "Meticulous Software | Capital Command", "/meticulous/shop": "Meticulous Shop | Capital Command", "/meticulous/museum": "Meticulous Museum | Capital Command", "/meticulous/brand": "Meticulous Brand | Capital Command", "/awards": "Awards Readiness | Capital Command", "/metanated": "Metanated Pitch | Capital Command", "/capital-intercept": "Capital Command", "/capitalintercept": "Capital Command"};
+  // PascalCase boundaries -> "-", mirroring _PASCAL_BOUNDARY_RE without lookbehind
+  // (old Safari fails to PARSE a lookbehind, taking the whole script down).
+  var dashed = function (s) {
+    return s.replace(/([a-z0-9])([A-Z])/g, "$1-$2").replace(/([A-Z])([A-Z][a-z])/g, "$1-$2");
+  };
+  var decode = function (s) {
+    // A %2F inside ONE segment must not become a structural separator: /blog/foo%2Fbar is a
+    // dynamic slug, and letting it split would match a static /blog/foo/bar and write ITS title.
+    try { var d = decodeURIComponent(s); return d.indexOf("/") < 0 ? d : s; } catch (e) { return s; }
+  };
+  var segments = function (path) { return path.split("/").filter(Boolean).map(decode); };
+  var norm = function (path) {
+    var parts = segments(path).map(function (s) { return dashed(s).toLowerCase(); });
+    return parts.length ? "/" + parts.join("/") : "/";
+  };
+  var lastPath = location.pathname, written = document.title, on = true;
+  var sync = function () {
+    // Path only: a hash/query change is the same page, and the SDK strips its own auth
+    // params with replaceState -- neither must clobber a server-rendered title in place.
+    if (!on || location.pathname === lastPath) return;
+    lastPath = location.pathname;
+    if (document.title !== written) { on = false; return; }
+    // Write ONLY a title the map proves. An unmapped path is a dynamic route (/blog/:slug) the
+    // map cannot carry, and writing a placeholder there is destructive, not merely vague: the
+    // prerender worker runs no setUserAgent, so its capture browser reads as human and executes
+    // this script, and coordinator.js's settle wait explicitly tolerates a full navigation --
+    // a redirect landing on an unmapped path would bake the placeholder into the stored
+    // snapshot. Leaving the title alone degrades to today's behavior instead.
+    // Exact lookup only. A dash-stripped retry here would let a genuinely different /set-up
+    // claim /setup: the map carries a dash-free key only where a PascalCase boundary put the
+    // dashes there, and the client cannot tell the two apart. The map emits every reachable
+    // shape per segment instead (_client_url_variants).
+    var title = titles[norm(location.pathname)];
+    if (title === undefined) return;
+    document.title = title;
+    // Re-read: the setter stores verbatim but the getter strips and collapses whitespace, so
+    // keeping the assigned string would make the next sync() read our own write as the app's.
+    written = document.title;
+  };
+  var wrap = function (fn) {
+    // The history entry is already pushed by the time sync() runs, so a throw here would
+    // surface inside the host app's router and break navigation. This is injected into apps
+    // we cannot test, so it swallows rather than trusting the trace.
+    return function () {
+      var r = fn.apply(this, arguments);
+      try { sync(); } catch (e) {}
+      return r;
+    };
+  };
+  history.pushState = wrap(history.pushState);
+  history.replaceState = wrap(history.replaceState);
+  window.addEventListener("popstate", sync);
+})();
+  </script>
+  <meta content="yes" name="mobile-web-app-capable"/>
+  <meta content="black" name="apple-mobile-web-app-status-bar-style"/>
+  <meta content="Capital Command" name="apple-mobile-web-app-title"/>
+  <link href="https://capital.metanated.com" rel="canonical"/>
+  <script data-seo-source="builder" type="application/ld+json">
+   {"@context": "https://schema.org", "@type": "WebSite", "name": "Capital Command", "url": "https://capital.metanated.com"}
+  </script>
+  <script data-seo-source="builder" type="application/ld+json">
+   {"@context": "https://schema.org", "@type": "Organization", "name": "Capital Command", "url": "https://capital.metanated.com", "logo": "https://media.base44.com/images/public/6a286180819d95fc63a13b72/e34fddae9_logo.png"}
+  </script>
+ </head>
+ <body>
+  <div id="root">
+   <div data-seo-source="builder" id="seo-snapshot" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">
+    <main>
+     <header>
+      <h1>
+       Capital Command
+      </h1>
+      <p>
+       An ultra-secure, strategic grant management dashboard designed for cultural organizations to track, route, and optimize capital acquisition narratives in real-time.
+      </p>
+     </header>
+     <nav aria-label="Pages">
+      <h2>
+       Pages
+      </h2>
+      <ul>
+       <li>
+        <a href="/byron-jupiter">
+         Byron Jupiter Profile
+        </a>
+        — Byron Jupiter Profile on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/abundance">
+         Abundance Portal
+        </a>
+        — Abundance Portal on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/grants">
+         Grant Tracker
+        </a>
+        — Grant Tracker on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/growth-model">
+         Growth Model
+        </a>
+        — Growth Model on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/monuments">
+         Monuments
+        </a>
+        — Monuments on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/mama">
+         MAMA Consultant
+        </a>
+        — MAMA Consultant on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/architecture">
+         Web Architecture
+        </a>
+        — Web Architecture on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/box-studios">
+         Box Studios
+        </a>
+        — Box Studios on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/logos">
+         Ecosystem Logos
+        </a>
+        — Ecosystem Logos on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/jupiter-music-house">
+         Jupiter Music House
+        </a>
+        — Jupiter Music House on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/sanctuary-arts">
+         Sanctuary Arts
+        </a>
+        — Sanctuary Arts on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/impact">
+         Philanthropic Impact
+        </a>
+        — Philanthropic Impact on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/creator-profile">
+         Creator Profile
+        </a>
+        — Creator Profile on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/workbook">
+         AI Workbook
+        </a>
+        — AI Workbook on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/legislation">
+         Legislative Tracker
+        </a>
+        — Legislative Tracker on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/compliance">
+         Compliance Ledger
+        </a>
+        — Compliance Ledger on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/documentary">
+         Documentary
+        </a>
+        — Documentary on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/blackbook">
+         Blackbook
+        </a>
+        — Blackbook on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/voices">
+         Voices Of Tomorrow
+        </a>
+        — Voices Of Tomorrow on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/half-of-the-worst">
+         Half Of The Worst
+        </a>
+        — Half Of The Worst on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/omni-fm">
+         Omni FM
+        </a>
+        — Omni FM on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/minerva">
+         Minerva Trust
+        </a>
+        — Minerva Trust on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/jupe-grant">
+         Jupe Grant
+        </a>
+        — Jupe Grant on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/ten-year-plan">
+         Ten Year Plan
+        </a>
+        — Ten Year Plan on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/sponsors">
+         Corporate Sponsors
+        </a>
+        — Corporate Sponsors on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/fee-schedule">
+         Fee Schedule
+        </a>
+        — Fee Schedule on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/box-terminal">
+         Box Terminal
+        </a>
+        — Box Terminal on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/jupe-magazine">
+         Jupe Magazine
+        </a>
+        — Jupe Magazine on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/encyclopedia">
+         Encyclopedia Jupiter
+        </a>
+        — Encyclopedia Jupiter on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/wilbert-vantage">
+         Wilbert Vantage
+        </a>
+        — Wilbert Vantage on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/sovereign-frequency">
+         Sovereign Frequency
+        </a>
+        — Sovereign Frequency on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/white-label">
+         White Label
+        </a>
+        — White Label on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/ful-circle">
+         Ful Circle
+        </a>
+        — Ful Circle on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/ful-circle-roadmap">
+         Ful Circle Roadmap
+        </a>
+        — Ful Circle Roadmap on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/financial-health">
+         Financial Health
+        </a>
+        — Financial Health on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/delta-core">
+         Delta Core
+        </a>
+        — Delta Core on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/grant-review">
+         Grant Review
+        </a>
+        — Grant Review on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/ai-command">
+         AI Automation
+        </a>
+        — AI Automation on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/press/breath-444">
+         Press Breath444
+        </a>
+        — Press Breath444 on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/editorial/1996">
+         Editorial1996
+        </a>
+        — Editorial1996 on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/recipient-files">
+         Recipient Files
+        </a>
+        — Recipient Files on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/official-record">
+         Official Record
+        </a>
+        — Official Record on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/books/bg-1996">
+         BG Book1996
+        </a>
+        — BG Book1996 on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/books/creator-collapse-2030">
+         Creator Collapse2030
+        </a>
+        — Creator Collapse2030 on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/prosperity">
+         Prosperity Atlas
+        </a>
+        — Prosperity Atlas on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/standards">
+         Standards Manual
+        </a>
+        — Standards Manual on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/social-strategy">
+         Social Strategy
+        </a>
+        — Social Strategy on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/books/the-rewrite">
+         Music Law Reform
+        </a>
+        — Music Law Reform on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/regional-growth">
+         Regional Growth
+        </a>
+        — Regional Growth on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/jupiter-risk">
+         Jupiter Risk Ops
+        </a>
+        — Jupiter Risk Ops on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/byron-peggys-son">
+         Byron Peggys Son
+        </a>
+        — Byron Peggys Son on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/98-decides">
+         The98 Decides
+        </a>
+        — The98 Decides on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/wsdg">
+         WSDG Engagement
+        </a>
+        — WSDG Engagement on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/manuscript">
+         Manuscript
+        </a>
+        — Manuscript on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/solid-color-ops">
+         Solid Color Ops
+        </a>
+        — Solid Color Ops on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/optimus-maximus">
+         Optimus Maximus
+        </a>
+        — Optimus Maximus on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/covert-map">
+         Covert Map
+        </a>
+        — Covert Map on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/meticulous">
+         Meticulous Home
+        </a>
+        — Meticulous Home on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/meticulous/studio">
+         Meticulous Studio
+        </a>
+        — Meticulous Studio on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/meticulous/software">
+         Meticulous Software
+        </a>
+        — Meticulous Software on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/meticulous/shop">
+         Meticulous Shop
+        </a>
+        — Meticulous Shop on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/meticulous/museum">
+         Meticulous Museum
+        </a>
+        — Meticulous Museum on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/meticulous/brand">
+         Meticulous Brand
+        </a>
+        — Meticulous Brand on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/awards">
+         Awards Readiness
+        </a>
+        — Awards Readiness on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+       <li>
+        <a href="/metanated">
+         Metanated Pitch
+        </a>
+        — Metanated Pitch on Capital Command. An ultra-secure, strategic grant management dashboard designed for cultural.
+       </li>
+      </ul>
+     </nav>
+    </main>
+   </div>
+  </div>
+ </body>
+</html>
